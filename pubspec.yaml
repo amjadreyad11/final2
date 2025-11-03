@@ -76,6 +76,8 @@ flutter:
   assets:
     - assets/images/
     - assets/image_choose/
+    - assets/icons/
+
 
 
   # assets:
