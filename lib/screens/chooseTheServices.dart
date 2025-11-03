@@ -1,187 +1,150 @@
 import 'package:flutter/material.dart';
-
 import '../services/Blacksmith.dart';
 import '../services/Carpentry.dart';
 import '../services/Painting.dart';
 import '../services/Plumbing.dart';
 
 class Choosetheservices extends StatefulWidget {
-  const Choosetheservices({super.key});
+  final String userEmail;
+
+  const Choosetheservices({super.key, required this.userEmail});
 
   @override
   State<Choosetheservices> createState() => _ChoosetheservicesState();
 }
 
 class _ChoosetheservicesState extends State<Choosetheservices> {
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        appBar: AppBar(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
         leading: IconButton(
-              icon: Image.asset(
-                'assets/icons/left-arrow.png', 
-                  width: 24,
-                height: 24,
-
-             ),
+          icon: Image.asset(
+            'assets/icons/left-arrow.png',
+            width: 24,
+            height: 24,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
+        title: const Text("اختر الخدمة"),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 250, 94, 16),
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(50),
-          child: Column(children: [
-            Text(
-              "Choose the service you need...",
-              
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 250, 94, 16)),
-            ),
-            const SizedBox(height: 50),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => Carpentry()));
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 200,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: const Color.fromARGB(255, 17, 14, 103),
-                              width: 15),
-                          image: const DecorationImage(
-                            image:
-                                AssetImage("assets/image_choose/IMG_7561.JPG"),
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      const Text("Carpentry service",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 25),),
-                    ],
-                  ),
+          padding: const EdgeInsets.all(40),
+          child: Column(
+            children: [
+              const Text(
+                "Choose the service you need...",
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 250, 94, 16),
                 ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
 
-                const SizedBox(width: 50),
-
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => Blacksmith()));
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 200,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: const Color.fromARGB(255, 17, 14, 103),
-                              width: 15),
-                          image: const DecorationImage(
-                            image:
-                                AssetImage("assets/image_choose/IMG_7559.JPG"),
-                            fit: BoxFit.contain,
-                          ),
+              // الصف الأول (نجار وحداد)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildServiceCard(
+                    title: "Carpentry",
+                    imagePath: "assets/image_choose/IMG_7561.JPG",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => Carpentry(userEmail: widget.userEmail),
                         ),
-                      ),
-                      const SizedBox(height: 15),
-                      const Text("Blacksmith service",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 25)),
-                    ],
+                      );
+                    },
                   ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 50),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => Plumbing()));
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 200,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: const Color.fromARGB(255, 17, 14,103),
-                              width: 15),
-                          image: const DecorationImage(
-                            image:
-                                AssetImage("assets/image_choose/IMG_7560.JPG"),
-                            fit: BoxFit.contain,
-                          ),
+                  const SizedBox(width: 30),
+                  _buildServiceCard(
+                    title: "Blacksmith",
+                    imagePath: "assets/image_choose/IMG_7559.JPG",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => Blacksmith(userEmail: widget.userEmail),
                         ),
-                      ),
-                      const SizedBox(height: 15),
-                      const Text("Plumbing services",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 25)),
-                    ],
+                      );
+                    },
                   ),
-                ),
+                ],
+              ),
 
-                const SizedBox(width: 50),
+              const SizedBox(height: 40),
 
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => Painting()));
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 200,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: const Color.fromARGB(255, 17, 14, 103),
-                              width: 15),
-                          image: const DecorationImage(
-                            image:
-                                AssetImage("assets/image_choose/IMG_7562.JPG"),
-                            fit: BoxFit.contain,
-                          ),
+              // الصف الثاني (مواسرجي ودهان)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildServiceCard(
+                    title: "Plumbing",
+                    imagePath: "assets/image_choose/IMG_7560.JPG",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => Plumbing(userEmail: widget.userEmail),
                         ),
-                      ),
-                      const SizedBox(height: 15),
-                      const Text("Painting services",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 25)),
-                    ],
+                      );
+                    },
                   ),
-                ),
-              ],
-            ),
-          ]),
+                  const SizedBox(width: 30),
+                  _buildServiceCard(
+                    title: "Painting",
+                    imagePath: "assets/image_choose/IMG_7562.JPG",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => Painting(userEmail: widget.userEmail),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildServiceCard({
+    required String title,
+    required String imagePath,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 160,
+            height: 160,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: const Color.fromARGB(255, 17, 14, 103), width: 5),
+              image: DecorationImage(image: AssetImage(imagePath), fit: BoxFit.cover),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            "$title service",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+        ],
       ),
     );
   }

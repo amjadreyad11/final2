@@ -17,7 +17,7 @@ class _BottombarselectedState extends State<Bottombarselected> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    Choosetheservices(),
+    Choosetheservices(userEmail: '',),
     FavoritesPage(),
     ProfilePage(),
   ];

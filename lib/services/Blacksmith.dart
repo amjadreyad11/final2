@@ -1,91 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../model/models.dart';
-import '../provider/userprovider.dart';
-import '../users/firstuser.dart';
+import '../service/db_helper.dart';
 
 class Blacksmith extends StatefulWidget {
-  const Blacksmith({super.key});
+  final String userEmail;
+
+  const Blacksmith({super.key, required this.userEmail});
 
   @override
   State<Blacksmith> createState() => _BlacksmithState();
 }
 
 class _BlacksmithState extends State<Blacksmith> {
+  Map<String, dynamic>? userData;
 
   @override
-
   void initState() {
     super.initState();
-  Provider.of<UserProvider>(context, listen: false).setUsers( [
+    _loadUserData();
+  }
 
-
-  UserModel(
-  id: "1",
-  phone: "",
-  image: "https://newprofilepic.photo-cdn.net//assets/images/article/profile.jpg?90af0c8",
-  name: "Mohammed",
-  job: "Blacksmith",
-  ),
-
-  UserModel(
-  id: "1",
-  phone: "",
-  image: "https://previews.123rf.com/images/sanneberg/sanneberg1611/sanneberg161100860/65642082-portrait-of-happy-man-smiling-for-camera.jpg",
-  name: "Mohammed",
-  job: "Blacksmith",
-  ),
-
-  UserModel(
-  id: "1",
-  phone: "",
-  image: "https://previews.123rf.com/images/sanneberg/sanneberg1611/sanneberg161100860/65642082-portrait-of-happy-man-smiling-for-camera.jpg",
-  name: "Mohammed",
-  job: "Blacksmith",
-  ),
-
-  UserModel(
-  id: "1",
-  phone: "",
-  image: "https://previews.123rf.com/images/sanneberg/sanneberg1611/sanneberg161100860/65642082-portrait-of-happy-man-smiling-for-camera.jpg",
-
-  name: "Mohammed",
-  job: "Blacksmith",
-  ),
-
-  ],
-  );}
-
+  Future<void> _loadUserData() async {
+    final data = await DBHelper.getUserByEmail(widget.userEmail);
+    setState(() {
+      userData = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("خدمات الحدادة"),
+        backgroundColor: Colors.grey[800],
+      ),
+      body: userData == null
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+        padding: const EdgeInsets.all(20),
+        child: _buildUserCard(),
+      ),
+    );
+  }
 
-final provider = Provider.of<UserProvider>(context);
-
-return Scaffold(
-appBar: AppBar(title: Text("Blacksmiths")),
-body: ListView.builder(
-itemCount: provider.users.length,
-itemBuilder: (context, index) {
-final user = provider.users[index];
-return ListTile(
-leading: CircleAvatar(
-backgroundImage: NetworkImage(user.image),
-),
-title: Text(user.name),
-subtitle: Text(user.job),
-onTap: () {
-provider.selectUser(user);
-Navigator.push(
-context,
-MaterialPageRoute(builder: (_) =>  UsersPage()),
-);
-},
-);
-},
-),
-);
+  Widget _buildUserCard() {
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      margin: const EdgeInsets.all(10),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("👤 الاسم: ${userData!['name']}", style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 10),
+            Text("📞 الهاتف: ${userData!['phone']}", style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 10),
+            Text("📍 الموقع: ${userData!['location']}", style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 10),
+            Text("💼 الخبرة: ${userData!['experience']} سنوات", style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 10),
+            Text("🛠️ المهنة: ${userData!['career']}", style: const TextStyle(fontSize: 18)),
+          ],
+        ),
+      ),
+    );
+  }
 }
-}
-

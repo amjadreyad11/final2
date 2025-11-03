@@ -10,6 +10,8 @@ class DBHelper {
     return _db!;
   }
 
+
+
   static Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
@@ -44,10 +46,17 @@ class DBHelper {
 
   static Future<Map<String, dynamic>?> getUserByEmail(String email) async {
     final db = await database;
-    final result =
-    await db.query('users', where: 'email = ?', whereArgs: [email]);
-    return result.isNotEmpty ? result.first : null;
+    final result = await db.query(
+      'users',
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return null;
   }
+
 
   static Future<List<Map<String, dynamic>>> getUsersByJob(String job) async {
     final db = await database;
@@ -85,4 +94,6 @@ class DBHelper {
     final db = await database;
     return await db.delete('users');
   }
+
+
 }

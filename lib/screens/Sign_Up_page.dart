@@ -3,6 +3,10 @@ import 'package:final_project_dlny/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 
 import '../service/db_helper.dart';
+import '../services/Blacksmith.dart';
+import '../services/Carpentry.dart';
+import '../services/Painting.dart';
+import '../services/Plumbing.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -63,10 +67,37 @@ class _SignUpPageState extends State<SignUpPage> {
         const SnackBar(content: Text("✅ تم التسجيل بنجاح")),
       );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const ProfilePage()),
-      );
+      if (_showFields) {
+        // ✅ المستخدم مقدم خدمة
+        final career = careerController.text.trim().toLowerCase();
+        final userEmail = emailController.text.trim();
+
+        Widget nextPage;
+
+        if (career.contains("حداد") || career.contains("blacksmith")) {
+          nextPage = Blacksmith(userEmail: userEmail);
+        } else if (career.contains("نجار") || career.contains("carpentry")) {
+          nextPage = Carpentry(userEmail: userEmail);
+        } else if (career.contains("دهان") || career.contains("painting")) {
+          nextPage = Painting(userEmail: userEmail);
+        } else if (career.contains("مواسرجي") || career.contains("plumbing")) {
+          nextPage = Plumbing(userEmail: userEmail);
+        } else {
+          nextPage = const ProfilePage();
+        }
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => nextPage),
+        );
+
+    } else {
+        // ✅ المستخدم عادي (ليس مقدم خدمة)
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const ProfilePage()),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("❌ خطأ: $e")));
