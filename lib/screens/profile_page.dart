@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../service/db_helper.dart';
+import 'Assistant_evaluation.dart';
 import 'Login_page_user.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -191,6 +192,23 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const SizedBox(height: 25),
+
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AssistantEvaluation()),
+                  );
+                },
+                icon: const Icon(Icons.star_rate),
+                label: const Text("تقييم المساعد"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orangeAccent,
+                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
+              ),
+
               ElevatedButton.icon(
                 onPressed: _deleteAccount,
                 icon: const Icon(Icons.delete_forever),
@@ -226,3 +244,4 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+

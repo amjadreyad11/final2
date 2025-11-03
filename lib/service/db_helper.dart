@@ -44,7 +44,8 @@ class DBHelper {
 
   static Future<Map<String, dynamic>?> getUserByEmail(String email) async {
     final db = await database;
-    final result = await db.query('users', where: 'email = ?', whereArgs: [email]);
+    final result =
+    await db.query('users', where: 'email = ?', whereArgs: [email]);
     return result.isNotEmpty ? result.first : null;
   }
 
@@ -63,9 +64,25 @@ class DBHelper {
     );
   }
 
-  /// جلب كل المستخدمين
+  /// 🧾 جلب جميع المستخدمين
   static Future<List<Map<String, dynamic>>> getAllUsers() async {
     final db = await database;
     return await db.query('users');
+  }
+
+  /// 🗑️ حذف مستخدم محدد حسب id
+  static Future<int> deleteUser(int id) async {
+    final db = await database;
+    return await db.delete(
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  /// 🧹 حذف كل المستخدمين (اختياري)
+  static Future<int> deleteAllUsers() async {
+    final db = await database;
+    return await db.delete('users');
   }
 }
