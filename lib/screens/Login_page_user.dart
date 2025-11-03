@@ -1,7 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
+import '../service/db_helper.dart';
 import 'Sign_Up_page.dart';
+import 'chooseTheServices.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,30 +13,57 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  // 🔍 دالة التحقق من المستخدم
+  Future<void> _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("الرجاء إدخال البريد الإلكتروني وكلمة المرور")),
+      );
+      return;
+    }
+
+    final user = await DBHelper.getUserByEmail(email);
+
+    if (user != null && user['password'] == password) {
+      // ✅ تسجيل الدخول ناجح
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("تم تسجيل الدخول بنجاح")),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Choosetheservices(userEmail: email),
+        ),
+      );
+    } else {
+      // ❌ فشل تسجيل الدخول
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("البريد الإلكتروني أو كلمة المرور غير صحيحة")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 249, 249, 249),
       appBar: AppBar(
-            leading: IconButton(
-              icon: Image.asset(
-                'assets/icons/left-arrow.png', 
-                  width: 24,
-                height: 24,
-
-             ),
-        //backgroundColor: const Color.fromARGB(255, 249, 249, 249),
-        //elevation: 0,
-        //leading: IconButton(
-        //icon: const Icon(
-        //Icons.arrow_back,
-        //color: Color.fromARGB(255, 250, 94, 16),
-        //),
+        leading: IconButton(
+          icon: Image.asset(
+            'assets/icons/left-arrow.png',
+            width: 24,
+            height: 24,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
-        
         ),
       ),
       body: Center(
@@ -74,11 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 40),
 
-              // Username
+              // 📧 Email field
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Username",
+                  "Email",
                   style: TextStyle(
                     color: Color.fromARGB(255, 8, 8, 8),
                     fontSize: 18,
@@ -88,26 +116,28 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 6),
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Color.fromARGB(241, 235, 235, 161), 
-                  hintText: "Enter your username",
+                  fillColor: const Color.fromARGB(241, 235, 235, 161),
+                  hintText: "Enter your email",
                   contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   enabledBorder: OutlineInputBorder(
                     borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 250, 94, 16), width: 1.5), 
+                        color: Color.fromARGB(255, 250, 94, 16), width: 1.5),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 250, 94, 16), width: 2), 
+                        color: Color.fromARGB(255, 250, 94, 16), width: 2),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
 
+              // 🔒 Password field
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -121,13 +151,14 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 6),
               TextField(
+                controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: const Color.fromARGB(241, 235, 235, 161), 
+                  fillColor: const Color.fromARGB(241, 235, 235, 161),
                   hintText: "Enter your password",
                   contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePassword
@@ -155,17 +186,14 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 30),
 
+              // 🔘 Sign in button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("تم تسجيل الدخول بنجاح")),
-                    );
-                  },
+                  onPressed: _login, // ← الدالة التي تحقق الدخول
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        const Color.fromARGB(255, 250, 94, 16), 
+                    const Color.fromARGB(255, 250, 94, 16),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -201,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignUpPage(),
+                              builder: (context) => const SignUpPage(),
                             ),
                           );
                         },
