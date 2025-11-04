@@ -10,6 +10,13 @@ class DBHelper {
     return _db!;
   }
 
+  Future<void> printAllUsers() async {
+    final db = await openDatabase('my_database.db');
+    final users = await db.query('users');
+    for (var user in users) {
+      print(user);
+    }
+  }
 
 
   static Future<Database> _initDB(String filePath) async {
@@ -30,7 +37,6 @@ class DBHelper {
             career TEXT,
             location TEXT,
             experience TEXT,
-            isProvider INTEGER,
             favorite INTEGER DEFAULT 0,
             image TEXT
           )

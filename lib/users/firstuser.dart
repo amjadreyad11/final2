@@ -16,23 +16,23 @@ class UsersPage extends StatelessWidget {
 
     }
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Column(
-        children: [
-          CircleAvatar(radius: 60, backgroundImage: NetworkImage(user.image)),
-          SizedBox(height: 20),
-          Text("Name: ${user.name}", style: TextStyle(fontSize: 20)),
-          Text("Job: ${user.job}", style: TextStyle(fontSize: 20)),
-          SizedBox(height: 30),
-          ElevatedButton(
-            onPressed: () {
-              provider.addToFavorites(user);
-            },
-            child: Text("Add to Favorites"),
-          ),
-        ],
-      ),)
+        appBar: AppBar(),
+        body: Center(
+          child: Column(
+            children: [
+              CircleAvatar(radius: 60, backgroundImage: NetworkImage(user.image)),
+              SizedBox(height: 20),
+              Text("Name: ${user.name}", style: TextStyle(fontSize: 20)),
+              Text("Job: ${user.job}", style: TextStyle(fontSize: 20)),
+              SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () {
+                  provider.addToFavorites(user);
+                },
+                child: Text("Add to Favorites"),
+              ),
+            ],
+          ),)
     );
   }
 }

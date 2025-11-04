@@ -16,114 +16,114 @@ class Choosetheservices extends StatefulWidget {
 class _ChoosetheservicesState extends State<Choosetheservices> {
   @override
   Widget build(BuildContext context) {
+    // ✅ قياسات الشاشة
+    final size = MediaQuery.of(context).size;
+    final double cardWidth = size.width * 0.4;
+    final double cardHeight = size.width * 0.4;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Image.asset(
-            'assets/icons/left-arrow.png',
-            width: 24,
-            height: 24,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text("اختر الخدمة"),
-        centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 250, 94, 16),
-      ),
-      body: Center(
+
+      body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(40),
-          child: Column(
-            children: [
-              const Text(
-                "Choose the service you need...",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 250, 94, 16),
+          padding: const EdgeInsets.all(20),
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                const Text(
+                  "Choose the service you need...",
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 250, 94, 16),
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
+                const SizedBox(height: 40),
 
-              // الصف الأول (نجار وحداد)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildServiceCard(
-                    title: "Carpentry",
-                    imagePath: "assets/image_choose/IMG_7561.JPG",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => Carpentry(userEmail: widget.userEmail),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 30),
-                  _buildServiceCard(
-                    title: "Blacksmith",
-                    imagePath: "assets/image_choose/IMG_7559.JPG",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => Blacksmith(userEmail: widget.userEmail),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 40),
-
-              // الصف الثاني (مواسرجي ودهان)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildServiceCard(
-                    title: "Plumbing",
-                    imagePath: "assets/image_choose/IMG_7560.JPG",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => Plumbing(userEmail: widget.userEmail),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 30),
-                  _buildServiceCard(
-                    title: "Painting",
-                    imagePath: "assets/image_choose/IMG_7562.JPG",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => Painting(userEmail: widget.userEmail),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ],
+                // ✅ استخدمنا Wrap بدلاً من Row لجعل العناصر تتوزع تلقائياً حسب العرض
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 20,
+                  runSpacing: 30,
+                  children: [
+                    _buildServiceCard(
+                      title: "Carpentry",
+                      imagePath: "assets/image_choose/IMG_7561.JPG",
+                      width: cardWidth,
+                      height: cardHeight,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                Carpentry(userEmail: widget.userEmail),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildServiceCard(
+                      title: "Blacksmith",
+                      imagePath: "assets/image_choose/IMG_7559.JPG",
+                      width: cardWidth,
+                      height: cardHeight,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                Blacksmith(userEmail: widget.userEmail),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildServiceCard(
+                      title: "Plumbing",
+                      imagePath: "assets/image_choose/IMG_7560.JPG",
+                      width: cardWidth,
+                      height: cardHeight,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                Plumbing(userEmail: widget.userEmail),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildServiceCard(
+                      title: "Painting",
+                      imagePath: "assets/image_choose/IMG_7562.JPG",
+                      width: cardWidth,
+                      height: cardHeight,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                Painting(userEmail: widget.userEmail),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  // ✅ Widget بطاقة الخدمة (مرن ومناسب لجميع المقاسات)
   Widget _buildServiceCard({
     required String title,
     required String imagePath,
+    required double width,
+    required double height,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -131,18 +131,27 @@ class _ChoosetheservicesState extends State<Choosetheservices> {
       child: Column(
         children: [
           Container(
-            width: 160,
-            height: 160,
+            width: width,
+            height: height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: const Color.fromARGB(255, 17, 14, 103), width: 5),
-              image: DecorationImage(image: AssetImage(imagePath), fit: BoxFit.cover),
+              border: Border.all(
+                  color: const Color.fromARGB(255, 17, 14, 103), width: 4),
+              image: DecorationImage(
+                image: AssetImage(imagePath),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const SizedBox(height: 10),
           Text(
             "$title service",
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.black87,
+            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

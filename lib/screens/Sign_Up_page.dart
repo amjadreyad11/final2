@@ -1,12 +1,13 @@
-import 'package:final_project_dlny/screens/Login_page_user.dart';
-import 'package:final_project_dlny/screens/profile_page.dart';
 import 'package:flutter/material.dart';
-
+import 'package:final_project_dlny/screens/profile_page.dart';
 import '../service/db_helper.dart';
 import '../services/Blacksmith.dart';
 import '../services/Carpentry.dart';
 import '../services/Painting.dart';
 import '../services/Plumbing.dart';
+import 'Login_page_user.dart';
+import 'bottombarSelected.dart';
+
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -28,21 +29,24 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _loading = false;
   bool _showFields = false;
 
+  // ✅ عملية التسجيل
   Future<void> _signUp() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _loading = true);
 
     try {
-      final existingUser = await DBHelper.getUserByEmail(emailController.text.trim());
+      final existingUser =
+      await DBHelper.getUserByEmail(emailController.text.trim());
       if (existingUser != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("❌ المستخدم موجود بالفعل")),
         );
+        setState(() => _loading = false);
         return;
       }
 
-      // ✅ حفظ المستخدم في قاعدة البيانات العامة
+      // ✅ حفظ المستخدم في قاعدة البيانات
       final userData = {
         'name': nameController.text.trim(),
         'email': emailController.text.trim(),
@@ -53,25 +57,20 @@ class _SignUpPageState extends State<SignUpPage> {
         'experience': experienceController.text.trim(),
         'isProvider': _showFields ? 1 : 0,
         'favorite': 0,
-        'image': "https://cdn-icons-png.flaticon.com/512/149/149071.png", // صورة افتراضية
+        'image':
+        "https://cdn-icons-png.flaticon.com/512/149/149071.png", // صورة افتراضية
       };
 
       await DBHelper.insertUser(userData);
-
-      // ✅ إذا كان مقدم خدمة (Provider) أضفه إلى جدول المهنيين مباشرة
-      if (_showFields) {
-        print("تمت إضافة المستخدم كمقدم خدمة في مهنة: ${careerController.text}");
-      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("✅ تم التسجيل بنجاح")),
       );
 
+      // ✅ إذا كان المستخدم مقدم خدمة
       if (_showFields) {
-        // ✅ المستخدم مقدم خدمة
         final career = careerController.text.trim().toLowerCase();
         final userEmail = emailController.text.trim();
-
         Widget nextPage;
 
         if (career.contains("حداد") || career.contains("blacksmith")) {
@@ -90,12 +89,11 @@ class _SignUpPageState extends State<SignUpPage> {
           context,
           MaterialPageRoute(builder: (_) => nextPage),
         );
-
-    } else {
-        // ✅ المستخدم عادي (ليس مقدم خدمة)
+      } else {
+        // ✅ المستخدم العادي
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const ProfilePage()),
+          MaterialPageRoute(builder: (_) => const Bottombarselected()),
         );
       }
     } catch (e) {
@@ -115,19 +113,19 @@ class _SignUpPageState extends State<SignUpPage> {
             'assets/icons/left-arrow.png',
             width: 24,
             height: 24,
-            
-            
           ),
           onPressed: () {
-            Navigator.pop(
+            Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => LoginScreen()),
+              MaterialPageRoute(builder: (_) => const LoginScreen()),
             );
           },
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      body: Center(
+      backgroundColor: Colors.white,
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Column(
@@ -135,7 +133,8 @@ class _SignUpPageState extends State<SignUpPage> {
             children: [
               const Text(
                 "Sign Up",
-                style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
+                style:
+                TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
               Expanded(
@@ -143,8 +142,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(25),
                   decoration: BoxDecoration(
-
-                    color: const Color.fromARGB(255, 255, 255, 255),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(25),
                     boxShadow: [
                       BoxShadow(
@@ -160,30 +158,29 @@ class _SignUpPageState extends State<SignUpPage> {
                       children: [
                         _label("User name"),
                         _input(
-                          "Enter Your User name",
-                          (v) =>
-                              v!.isEmpty ? "Please Enter Your user name" : null,
+                          controller: nameController,
+                          hint: "Enter Your User name",
+                          validator: (v) => v!.isEmpty
+                              ? "Please Enter Your user name"
+                              : null,
                         ),
                         const SizedBox(height: 15),
-                        _label("Enter Your Email"),
+                        _label("Email"),
                         _input(
-                          "Enter Your Email",
-                          (v) => v!.isEmpty ? "Please Enter Your Email" : null,
+                          controller: emailController,
+                          hint: "Enter Your Email",
+                          validator: (v) => v!.isEmpty
+                              ? "Please Enter Your Email"
+                              : null,
                         ),
                         const SizedBox(height: 15),
                         _label("Password"),
                         _input(
-                          "Enter Your Password",
-                          (v) =>
-                              v!.isEmpty ? "Please Enter Your Password" : null,
-                          obscure: true,
-                        ),
-                        const SizedBox(height: 25),
-                        _label("Confirm Your Password"),
-                        _input(
-                          "Enter Your Password",
-                          (v) =>
-                              v!.isEmpty ? "Please Enter Your Password" : null,
+                          controller: passwordController,
+                          hint: "Enter Your Password",
+                          validator: (v) => v!.isEmpty
+                              ? "Please Enter Your Password"
+                              : null,
                           obscure: true,
                         ),
                         const SizedBox(height: 25),
@@ -194,51 +191,45 @@ class _SignUpPageState extends State<SignUpPage> {
                             });
                           },
                           child: Text(
+
                             _showFields
                                 ? "Hide additional fields"
                                 : "If you are a service provider",
                             style: const TextStyle(
-                              color: Color.fromARGB(255, 7, 7, 7),
+                              color: Colors.black,
                               fontSize: 18,
                             ),
                           ),
                         ),
                         const SizedBox(height: 20),
                         if (_showFields) ...[
-                          _extraField(phoneController, "phone number"),
+                          _extraField(phoneController, "Phone number"),
                           const SizedBox(height: 12),
-                          _extraField(careerController,
-                            "Service provider career",
-                            type: TextInputType.phone,
-                          ),
+                          _extraField(careerController, "Career"),
                           const SizedBox(height: 12),
                           _extraField(locationController, "Workplace"),
                           const SizedBox(height: 12),
                           _extraField(experienceController,
-                            "Number of years of experience",
-                          ),
+                              "Years of experience"),
                         ],
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: _signUp,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(
-                              255,
-                              250,
-                              94,
-                              16,
-                            ),
+                            backgroundColor:
+                            const Color.fromARGB(255, 250, 94, 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            padding:
+                            const EdgeInsets.symmetric(vertical: 14),
                           ),
                           child: const Text(
                             "Sign Up",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
-                              color: Color.fromARGB(255, 248, 249, 249),
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -255,17 +246,18 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                             TextButton(
                               onPressed: () {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => LoginScreen(),
+                                    builder: (_) => const LoginScreen(),
                                   ),
                                 );
                               },
                               child: const Text(
                                 "Login",
                                 style: TextStyle(
-                                  color: Color.fromARGB(255, 250, 94, 16),
+                                  color:
+                                  Color.fromARGB(255, 250, 94, 16),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -284,6 +276,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  // 🔹 Widgets مساعدة
   Widget _label(String text) => Align(
     alignment: Alignment.centerLeft,
     child: Text(
@@ -296,48 +289,49 @@ class _SignUpPageState extends State<SignUpPage> {
     ),
   );
 
-  Widget _input(
-    String hint,
-    String? Function(String?) validator, {
+  Widget _input({
+    required TextEditingController controller,
+    required String hint,
+    required String? Function(String?) validator,
     bool obscure = false,
   }) {
     return TextFormField(
+      controller: controller,
       obscureText: obscure,
       validator: validator,
       decoration: InputDecoration(
         filled: true,
-          fillColor: Color.fromARGB(241, 235, 235, 161),
+        fillColor: const Color.fromARGB(241, 235, 235, 161),
         hintText: hint,
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 228, 90, 26)),
+          borderSide:
+          const BorderSide(color: Color.fromARGB(255, 228, 90, 26)),
           borderRadius: BorderRadius.circular(25),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 15, 53, 80)),
+          borderSide:
+          const BorderSide(color: Color.fromARGB(255, 15, 53, 80)),
           borderRadius: BorderRadius.circular(25),
         ),
       ),
     );
   }
 
-  Widget _extraField(
-    TextEditingController c,
-    String label, {
-    TextInputType? type,
-  }) {
+  Widget _extraField(TextEditingController c, String label) {
     return TextField(
       controller: c,
-      keyboardType: type,
       decoration: InputDecoration(
         filled: true,
-           fillColor: Color.fromARGB(241, 235, 235, 161),
+        fillColor: const Color.fromARGB(241, 235, 235, 161),
         labelText: label,
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 228, 90, 26)),
+          borderSide:
+          const BorderSide(color: Color.fromARGB(255, 228, 90, 26)),
           borderRadius: BorderRadius.circular(25),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 15, 53, 80)),
+          borderSide:
+          const BorderSide(color: Color.fromARGB(255, 15, 53, 80)),
           borderRadius: BorderRadius.circular(25),
         ),
       ),

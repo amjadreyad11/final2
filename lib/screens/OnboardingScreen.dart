@@ -1,7 +1,6 @@
 
 import 'package:final_project_dlny/screens/Login_page_user.dart';
 
-import 'login_page_user.dart' hide LoginScreen; 
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -42,7 +41,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     } else {
       Navigator.push(
         context,
-        // $SELECTION_PLACEHOLDER$
         MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     }

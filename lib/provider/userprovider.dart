@@ -35,7 +35,6 @@ class UserProvider with ChangeNotifier {
     _favorites.removeWhere((u) => u.id == id);
     notifyListeners();
   }
-
   String? id;
   String? name;
   String? phone;

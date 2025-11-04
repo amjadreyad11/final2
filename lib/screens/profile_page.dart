@@ -136,10 +136,8 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("الملف الشخصي"),
-        backgroundColor: Colors.teal,
-      ),
+
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -193,21 +191,40 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 25),
 
-              ElevatedButton.icon(
-                onPressed: () {
+
+              ElevatedButton(
+
+
+onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const AssistantEvaluation()),
+                    MaterialPageRoute(builder: (_) => AssistantEvaluation()),
                   );
                 },
-                icon: const Icon(Icons.star_rate),
-                label: const Text("تقييم المساعد"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orangeAccent,
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-                  textStyle: const TextStyle(fontSize: 18),
+
+                                  style: ElevatedButton.styleFrom(
+
+                    backgroundColor:
+                    const Color.fromARGB(255, 250, 94, 16),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+
+                    ),
+                  ),
+
+                  child: const Text(
+                    "تقييم المساعد",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
+
+
+
 
               ElevatedButton.icon(
                 onPressed: _deleteAccount,
@@ -242,6 +259,32 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+
   }
+
+
+
+  Widget botton1(BuildContext context, String name) {
+    return TextButton(
+      onPressed: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const LoginScreen(),
+          ),
+        );
+      },
+      child: Text(
+        name,
+        style: const TextStyle(
+          color: Color.fromARGB(255, 250, 94, 16),
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
+      ),
+    );
+  }
+
 }
+
 

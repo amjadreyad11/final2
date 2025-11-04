@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../service/db_helper.dart';
 import 'Sign_Up_page.dart';
-import 'chooseTheServices.dart';
+import 'bottombarSelected.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -39,13 +39,13 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Choosetheservices(userEmail: email),
+          builder: (context) => Bottombarselected(),
         ),
       );
     } else {
       // ❌ فشل تسجيل الدخول
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("البريد الإلكتروني أو كلمة المرور غير صحيحة")),
+        const SnackBar(content: Text("البريد الإلكتروني أو كلمة المرور غير موجودة")),
       );
     }
   }
